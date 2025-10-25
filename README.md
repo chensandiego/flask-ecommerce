@@ -14,3 +14,9 @@ project/
     │   ├── App.vue
     │   ├── components/
     │   │   └── UserList.vue
+
+
+docker-compose up --build
+Flask backend: http://localhost:5000/api/users
+
+Vue frontend: http://localhost:5173

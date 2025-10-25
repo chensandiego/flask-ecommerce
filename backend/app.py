@@ -1,27 +1,26 @@
-from flask import Flask, request
-from flask_restful import Resource, Api
+from flask import Flask, request, jsonify
 from flask_cors import CORS
 
 app = Flask(__name__)
-CORS(app)  # Enable CORS for all domains (important for Vue)
-api = Api(app)
+CORS(app)
 
 users = [
     {"id": 1, "name": "Alice"},
     {"id": 2, "name": "Bob"},
 ]
 
-class UserList(Resource):
-    def get(self):
-        return users
+@app.route("/api/users", methods=["GET"])
+def get_users():
+    return jsonify(users)
 
-    def post(self):
-        data = request.get_json()
-        new_user = {"id": len(users) + 1, "name": data["name"]}
-        users.append(new_user)
-        return new_user, 201
-
-api.add_resource(UserList, "/api/users")
+@app.route("/api/users", methods=["POST"])
+def add_user():
+    data = request.json
+    if not data or "name" not in data:
+        return jsonify({"error": "Name required"}), 400
+    new_user = {"id": len(users) + 1, "name": data["name"]}
+    users.append(new_user)
+    return jsonify(new_user), 201
 
 if __name__ == "__main__":
-    app.run(host="127.0.0.1", port=5001, debug=True)
+    app.run(host="0.0.0.0", port=5000, debug=True)
